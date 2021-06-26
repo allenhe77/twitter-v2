@@ -1,0 +1,63 @@
+{
+    "DaisyMo26021147": {
+        "proxy": "23.229.119.218:7245",
+        "followed": {
+            "allen": true
+        },
+        "liked": {
+            "hack980171": true,
+            "citizentvkenya": true
+        },
+        "commented": {},
+        "retweeted": {},
+        "whatToComment": "Nice!",
+        "region": ""
+    },
+    "JeanFast4": {
+        "proxy": "23.254.91.41:9082",
+        "followed": {},
+        "liked": {
+            "hack980171": true,
+            "citizentvkenya": true
+        },
+        "commented": {},
+        "retweeted": {},
+        "whatToComment": "Yes, that is so awesome!",
+        "region": ""
+    },
+    "BblytheSailsbu2": {
+        "proxy": "23.250.101.88:8140",
+        "followed": {},
+        "liked": {
+            "hack980171": true,
+            "citizentvkenya": true
+        },
+        "commented": {},
+        "retweeted": {},
+        "whatToComment": "I agree!",
+        "region": ""
+    },
+    "monica_twain": {
+        "proxy": "23.236.168.217:8765",
+        "followed": {},
+        "liked": {
+            "hack980171": true,
+            "citizentvkenya": true
+        },
+        "commented": {},
+        "retweeted": {},
+        "whatToComment": "Very Insightful",
+        "region": ""
+    },
+    "RivaEll54970471": {
+        "proxy": "23.229.101.208:8732",
+        "followed": {},
+        "liked": {
+            "citizentvkenya": true
+        },
+        "commented": {},
+        "retweeted": {},
+        "whatToComment": "Oh wow!",
+        "region": ""
+    }
+}
