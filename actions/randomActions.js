@@ -56,6 +56,7 @@ const randomActions = async (page, sleep) => {
         };
 
         await selectRandomTweet();
+
         await selectRandomTweet();
         await selectRandomTweet();
 
