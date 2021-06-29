@@ -23,6 +23,10 @@ const botActions = process.argv[2];
 const botTwitUsername = process.argv[4];
 const proxy = process.argv[5];
 
+// const botTwitUsername = "BblytheSailsbu2";
+// const proxy = "45.94.45.13:7016";
+const { randomActions } = require("./actions/randomActions");
+
 const runBot = async () => {
     const puppeteer = addExtra(vanillaPuppeteer);
     puppeteer.use(Stealth());
@@ -36,17 +40,22 @@ const runBot = async () => {
 
     await logIn(previousSession, page, cookiesFilePath, botTwitUsername);
 
-    // await page.goto(`https://twitter.com/${userTweetHandle}`, {
-    //     waitUntil: "networkidle2",
-    // });
-
-    await page.goto("`https://twitter.com/", { waitUntil: "networkidle2" });
+    console.log("before goto");
+    await page.goto("https://twitter.com", { waitUntil: "networkidle2" });
 
     await sleep(3000);
-
+    console.log("after goto");
     //scrolling
 
-    await scrollPage(page);
+    // await scrollPage(page);
+
+    await randomActions(page, sleep);
+
+    await sleep(2500);
+
+    await page.goto(`https://twitter.com/${userTweetHandle}`, {
+        waitUntil: "networkidle2",
+    });
 
     if (botActions === "like") {
         await likeTweet(page, sleep);
