@@ -1,5 +1,6 @@
 const fs = require("fs");
-const botUsersFilePath = "./users.json";
+const path = require("path");
+const botUsersFilePath = path.join(__dirname, "../users.json");
 
 const getUserNameFromTxt = (str) => {
     //return username from original format
@@ -22,10 +23,9 @@ const decodeCookies = (str, userName) => {
     const newText4 = newText3.replace(/""/g, '"');
     let parsedCookies = JSON.parse(newText4);
 
-    fs.writeFileSync(
-        `./cookies/${userName}.json`,
-        JSON.stringify(parsedCookies)
-    );
+    const cookiePath = path.join(__dirname, `../cookies/${userName}.json`);
+
+    fs.writeFileSync(cookiePath, JSON.stringify(parsedCookies));
 };
 
 const getLinesFromOrderTxt = (file) => {

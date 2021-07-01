@@ -1,21 +1,29 @@
 {
-  "name": "twitter",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "node-fetch": "^2.6.1",
-    "node-os-utils": "^1.3.5",
-    "prettier": "^2.3.1",
-    "puppeteer": "^10.0.0",
-    "puppeteer-cluster": "^0.22.0",
-    "puppeteer-extra": "^3.1.18",
-    "puppeteer-extra-plugin-stealth": "^2.7.8"
-  }
+    "name": "twitter",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "node-fetch": "^2.6.1",
+        "node-os-utils": "^1.3.5",
+        "prettier": "^2.3.1",
+        "puppeteer": "^10.0.0",
+        "puppeteer-cluster": "^0.22.0",
+        "puppeteer-extra": "^3.1.18",
+        "puppeteer-extra-plugin-stealth": "^2.7.8"
+    },
+    "bin": {
+        "app": "./index.js"
+    },
+    "pkg": {
+        "scripts": [
+            "./scripts/*.js"
+        ]
+    }
 }
