@@ -1,1 +1,95 @@
-[{"domain":"mobile.twitter.com","httpOnly":false,"name":"lang","path":"/","secure":false,"value":"en"},{"domain":".twitter.com","expiry":1781116867,"httpOnly":false,"name":"ct0","path":"/","sameSite":"Lax","secure":true,"value":"f2ea33f39b01e47cda8ad305d04e18535180f37ba6e3e751a75940d51afda35dcc658e19fb2e5872cedff936483c51cd85b515858b31882e7fc90e135b28554d28e14d045ab091c4b7450715451dbbb8"},{"domain":".twitter.com","expiry":1670697667,"httpOnly":true,"name":"kdt","path":"/","secure":true,"value":"mjOywibCFfE4V0vwD4uDDY6AyTTFXUquwbHfXdmm"},{"domain":".twitter.com","expiry":1623447545,"httpOnly":false,"name":"gt","path":"/","secure":true,"value":"1403421546316718083"},{"domain":".twitter.com","expiry":1781116867,"httpOnly":true,"name":"auth_token","path":"/","sameSite":"None","secure":true,"value":"2772b295f5568a25c14a7399fa2e32ec76ef8b49"},{"domain":".twitter.com","httpOnly":true,"name":"_twitter_sess","path":"/","secure":true,"value":"BAh7CSIKZmxhc2hJQzonQWN0aW9uQ29udHJvbGxlcjo6Rmxhc2g6OkZsYXNo%250ASGFzaHsABjoKQHVzZWR7ADoPY3JlYXRlZF9hdGwrCFzTXvx5AToMY3NyZl9p%250AZCIlODM1OWJiZDZjZDZkMjI1M2ZlZmYyNTlhMmNmMjMyNTA6B2lkIiUzMTQx%250AMDAxYzk5ZTJiZGI1YmVjMzAwMGM1NmZlMjg5NA%253D%253D--68068fe3a1b61ef5f85b0020593729d9bbc38bb4"},{"domain":".twitter.com","expiry":1781116918,"httpOnly":false,"name":"twid","path":"/","sameSite":"None","secure":true,"value":"u%3D1403421966749605891"},{"domain":"mobile.twitter.com","expiry":1623476343,"httpOnly":false,"name":"_sl","path":"/","secure":true,"value":"1"},{"domain":".twitter.com","expiry":1686508731,"httpOnly":false,"name":"guest_id","path":"/","sameSite":"None","secure":true,"value":"v1%3A162343673141672182"},{"domain":".twitter.com","expiry":1686508731,"httpOnly":false,"name":"personalization_id","path":"/","sameSite":"None","secure":true,"value":"v1_px3T36NhoQ1g7IDC+P+Trg=="}]
+[
+    {
+        "domain": "mobile.twitter.com",
+        "httpOnly": false,
+        "name": "lang",
+        "path": "/",
+        "secure": false,
+        "value": "en"
+    },
+    {
+        "domain": ".twitter.com",
+        "expiry": 1781116867,
+        "httpOnly": false,
+        "name": "ct0",
+        "path": "/",
+        "sameSite": "Lax",
+        "secure": true,
+        "value": "f2ea33f39b01e47cda8ad305d04e18535180f37ba6e3e751a75940d51afda35dcc658e19fb2e5872cedff936483c51cd85b515858b31882e7fc90e135b28554d28e14d045ab091c4b7450715451dbbb8"
+    },
+    {
+        "domain": ".twitter.com",
+        "expiry": 1670697667,
+        "httpOnly": true,
+        "name": "kdt",
+        "path": "/",
+        "secure": true,
+        "value": "mjOywibCFfE4V0vwD4uDDY6AyTTFXUquwbHfXdmm"
+    },
+    {
+        "domain": ".twitter.com",
+        "expiry": 1623447545,
+        "httpOnly": false,
+        "name": "gt",
+        "path": "/",
+        "secure": true,
+        "value": "1403421546316718083"
+    },
+    {
+        "domain": ".twitter.com",
+        "expiry": 1781116867,
+        "httpOnly": true,
+        "name": "auth_token",
+        "path": "/",
+        "sameSite": "None",
+        "secure": true,
+        "value": "2772b295f5568a25c14a7399fa2e32ec76ef8b49"
+    },
+    {
+        "domain": ".twitter.com",
+        "httpOnly": true,
+        "name": "_twitter_sess",
+        "path": "/",
+        "secure": true,
+        "value": "BAh7CSIKZmxhc2hJQzonQWN0aW9uQ29udHJvbGxlcjo6Rmxhc2g6OkZsYXNo%250ASGFzaHsABjoKQHVzZWR7ADoPY3JlYXRlZF9hdGwrCFzTXvx5AToMY3NyZl9p%250AZCIlODM1OWJiZDZjZDZkMjI1M2ZlZmYyNTlhMmNmMjMyNTA6B2lkIiUzMTQx%250AMDAxYzk5ZTJiZGI1YmVjMzAwMGM1NmZlMjg5NA%253D%253D--68068fe3a1b61ef5f85b0020593729d9bbc38bb4"
+    },
+    {
+        "domain": ".twitter.com",
+        "expiry": 1781116918,
+        "httpOnly": false,
+        "name": "twid",
+        "path": "/",
+        "sameSite": "None",
+        "secure": true,
+        "value": "u%3D1403421966749605891"
+    },
+    {
+        "domain": "mobile.twitter.com",
+        "expiry": 1623476343,
+        "httpOnly": false,
+        "name": "_sl",
+        "path": "/",
+        "secure": true,
+        "value": "1"
+    },
+    {
+        "domain": ".twitter.com",
+        "expiry": 1686508731,
+        "httpOnly": false,
+        "name": "guest_id",
+        "path": "/",
+        "sameSite": "None",
+        "secure": true,
+        "value": "v1%3A162343673141672182"
+    },
+    {
+        "domain": ".twitter.com",
+        "expiry": 1686508731,
+        "httpOnly": false,
+        "name": "personalization_id",
+        "path": "/",
+        "sameSite": "None",
+        "secure": true,
+        "value": "v1_px3T36NhoQ1g7IDC+P+Trg=="
+    }
+]
