@@ -1,6 +1,6 @@
 const { getRandomSideBarEle } = require("./scripts/elemenetsList");
-
-const randomUseragent = require("random-useragent");
+const glob = require("glob");
+// const randomUseragent = require("random-useragent");
 // const puppeteer = require("puppeteer");
 const puppeteer = require("puppeteer-extra");
 const StealthPlugin = require("puppeteer-extra-plugin-stealth");
@@ -19,6 +19,22 @@ const proxyArr = [
     "46.161.50.103",
     "46.161.51.80",
     "5.101.2.180",
+    "5.8.11.235",
+    "91.243.51.181",
+    "91.243.48.140",
+    "5.8.48.210",
+    "5.101.1.93",
+    "37.139.56.153",
+    "37.139.59.5",
+    "5.101.0.206",
+    "31.184.199.154",
+    "5.101.0.27",
+    "5.8.11.20",
+    "5.8.53.201",
+    "5.101.1.97",
+    "31.184.194.92",
+    "95.215.1.81",
+    "5.8.11.107",
 ];
 
 // const proxy = "5.101.4.131:44429";
@@ -47,15 +63,37 @@ puppeteer.use(
     })
 );
 
+let picArr;
+
+glob("profilePics/*.jpeg", {}, function (er, files) {
+    // files is an array of filenames.
+    // If the `nonull` option is set, and nothing
+    // was found, then files is ["**/*.js"]
+    // er is an error object or null.
+    picArr = files;
+});
+
 const getUser = async () => {
     return new Promise(async (resolve) => {
+        const getRandomPic = () => {
+            const fileNum = getRandomIntBetween(0, picArr.length - 1);
+            return fileNum;
+        };
+
         const proxy = proxyArr[getRandomIntBetween(0, 9)] + ":44429";
 
         const browser = await puppeteer.launch({
             headless: false,
-            args: [`--proxy-server=${proxy}`],
+            args: [`--proxy-server=${proxy}`, "--disable-notifications"],
         });
         const page = await browser.newPage();
+
+        await page.evaluateOnNewDocument(() => {
+            delete navigator.__proto__.webdriver;
+        });
+
+        await sleep(2000);
+
         await page.setUserAgent(botUsetAgent);
         await page.goto("https://twitter.com", {
             waitUntil: "networkidle2",
@@ -263,7 +301,7 @@ const getUser = async () => {
         await sleep(3500);
 
         const elementHandle = await page.$("input[type=file]");
-        await elementHandle.uploadFile("logo.jpeg");
+        await elementHandle.uploadFile(picArr[getRandomPic()]);
 
         await sleep(2190);
 
@@ -347,8 +385,10 @@ const getUser = async () => {
 
         await sleep(4000);
 
+        //skip changed to allow, to change it back change last div to 2
+
         const skipNoti =
-            '//*[@id="layers"]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div/div/div/div/div[2]/div[2]/div[2]';
+            '//*[@id="layers"]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div/div/div/div/div[2]/div[2]/div[1]';
         const skipNotiEle = await page.$x(skipNoti);
         await skipNotiEle[0].click();
 

@@ -7,7 +7,7 @@ const { sleep, getRandomIntBetween } = require("./scripts/utils");
 puppeteer.use(StealthPlugin());
 const login = require("./login2");
 const fetch = require("node-fetch");
-const userName = "Justine98218192";
+
 // updateBotActionList("DaisyMo26021147", "allen");
 
 const proxyArr = [
@@ -23,7 +23,7 @@ const proxyArr = [
     "46.161.51.80",
     "5.101.2.180",
 ];
-
+const userName = "Abigail32219747";
 (async () => {
     const proxy = proxyArr[getRandomIntBetween(0, 9)] + ":44429";
     const browser = await puppeteer.launch({
@@ -32,7 +32,9 @@ const proxyArr = [
     });
 
     const page = await browser.newPage();
-
+    // await page.evaluateOnNewDocument(() => {
+    //     delete navigator.__proto__.webdriver;
+    // });
     await login(page, userName);
 
     const file = fs.readFileSync(`new/${userName}.json`);
