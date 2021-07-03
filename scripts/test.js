@@ -1,5 +1,5 @@
 const puppeteer = require("puppeteer");
-const a = process.argv[2];
+
 const fs = require("fs");
 const { updateBotActionList } = require("./utils");
 const fetch = require("node-fetch");
@@ -12,17 +12,17 @@ const fetch = require("node-fetch");
 
     const page = await browser.newPage();
 
-    const filePath = `./cookies/monica_twain.json`;
-    if (fs.existsSync(filePath)) {
-        // If file exist load the cookies
-        const cookiesString = fs.readFileSync(filePath);
-        const parsedCookies = JSON.parse(cookiesString);
-        if (parsedCookies.length !== 0) {
-            for (let cookie of parsedCookies) {
-                await page.setCookie(cookie);
-            }
-        }
-    }
+    // const filePath = `./cookies/monica_twain.json`;
+    // if (fs.existsSync(filePath)) {
+    //     // If file exist load the cookies
+    //     const cookiesString = fs.readFileSync(filePath);
+    //     const parsedCookies = JSON.parse(cookiesString);
+    //     if (parsedCookies.length !== 0) {
+    //         for (let cookie of parsedCookies) {
+    //             await page.setCookie(cookie);
+    //         }
+    //     }
+    // }
     await page.goto("https://www.twitter.com");
     // other actions...
 

@@ -1,0 +1,436 @@
+const randomUseragent = require("random-useragent");
+// const puppeteer = require("puppeteer");
+const puppeteer = require("puppeteer-extra");
+const RecaptchaPlugin = require("puppeteer-extra-plugin-recaptcha");
+const proxy = "5.101.4.131:44429";
+const proxyChain = require("proxy-chain");
+// const username = "veiyeexa";
+// const password = "A4MLI8Bz";
+const { sleep, getRandomIntBetween } = require("./scripts/utils");
+const fs = require("fs");
+const fetch = require("node-fetch");
+
+const name = "effystone";
+
+const smsApiKey = "1532b3ecc5ef3d62A93759805860c339";
+
+const password = "123456abcde";
+
+const capchaKey = "8cd2a604d01a760299d88b6bbed17cf2";
+
+const botUsetAgent =
+    "5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36";
+
+puppeteer.use(
+    RecaptchaPlugin({
+        provider: {
+            id: "2captcha",
+            token: capchaKey, // REPLACE THIS WITH YOUR OWN 2CAPTCHA API KEY ⚡
+        },
+        visualFeedback: true, // colorize reCAPTCHAs (violet = detected, green = solved)
+    })
+);
+
+const getUser = async () => {
+    const userAgent = randomUseragent.getRandom(function (ua) {
+        return parseFloat(ua.browserVersion) >= 20;
+    });
+
+    const browser = await puppeteer.launch({
+        headless: false,
+        args: [`--proxy-server=${proxy}`],
+    });
+    const page = await browser.newPage();
+    await page.setUserAgent(botUsetAgent);
+    await page.goto("https://twitter.com", {
+        waitUntil: "networkidle2",
+    });
+
+    await sleep(1500);
+
+    await page.click('a[href="/i/flow/signup"]');
+
+    await sleep(4000);
+
+    await page.keyboard.type(name, { delay: 20 });
+
+    await sleep(1300);
+
+    await page.keyboard.press("Tab");
+
+    await sleep(500);
+
+    const apiRes = await fetch(
+        `https://sms-activate.ru/stubs/handler_api.php?api_key=${smsApiKey}&action=getNumber&service=tw&country=0`
+    );
+
+    const apiResText = await apiRes.text();
+    console.log(apiResText);
+    console.log(typeof apiResText);
+    console.log(apiResText.split(":"));
+    const requestId = apiResText.split(":")[1];
+    const phoneNum = apiResText.split(":")[2];
+    console.log("id: ", requestId);
+    console.log("number: ", phoneNum);
+
+    // wait for phone number
+
+    //type number in
+
+    await page.keyboard.type(phoneNum, { delay: 35 });
+
+    await sleep(1350);
+
+    try {
+        await page.waitForSelector('div[aria-live="assertive"]', {
+            visible: true,
+            timeout: 3500,
+        });
+        console.log("Phone number not valid.");
+
+        try {
+            await browser.close();
+            return;
+        } catch (err) {
+            console.error(err);
+        }
+    } catch (err) {
+        console.log("Phone number working!");
+    }
+
+    const month =
+        '//*[@id="layers"]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[1]/div/div[5]/div[3]/div/div[1]';
+
+    const monthElement = await page.$x(month);
+    await monthElement[0].click();
+
+    await sleep(2300);
+
+    await page.select("#SELECTOR_1", getRandomIntBetween(1, 12).toString());
+
+    const day =
+        '//*[@id="layers"]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[1]/div/div[5]/div[3]/div/div[2]';
+
+    const dayEle = await page.$x(day);
+
+    await dayEle[0].click();
+
+    await sleep(1800);
+
+    await page.select("#SELECTOR_2", getRandomIntBetween(1, 28).toString());
+
+    const year =
+        '//*[@id="layers"]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[1]/div/div[5]/div[3]/div/div[3]';
+
+    const yearEle = await page.$x(year);
+
+    await yearEle[0].click();
+
+    await sleep(1977);
+
+    await page.select(
+        "#SELECTOR_3",
+        getRandomIntBetween(1990, 2002).toString()
+    );
+
+    await sleep(2136);
+
+    const submit =
+        '//*[@id="layers"]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[2]/div';
+    const submitEle = await page.$x(submit);
+
+    await submitEle[0].click();
+    await sleep(1400);
+
+    const next =
+        '//*[@id="layers"]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[2]/div';
+
+    const nextEle = await page.$x(next);
+    await nextEle[0].click();
+
+    await sleep(1700);
+
+    const signUp =
+        '//*[@id="layers"]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div/div/div/div[5]';
+    const signUpEle = await page.$x(signUp);
+
+    await signUpEle[0].click();
+
+    await sleep(2061);
+
+    //confirming send sms to phone number
+    const ok =
+        '//*[@id="layers"]/div[2]/div/div/div/div/div/div[2]/div[2]/div[3]/div[2]';
+
+    const okEle = await page.$x(ok);
+
+    await okEle[0].click();
+
+    // send request to sms api to change status to 1
+
+    let comfirmCode = "";
+    let confirmed = false;
+
+    let changeSmsStatusToSent = await fetch(
+        `https://sms-activate.ru/stubs/handler_api.php?api_key=${smsApiKey}&action=setStatus&status=1&id=${requestId}`
+    );
+
+    for (let i = 0; i < 15; i++) {
+        // get sms code from twitter
+        let statusRes = await fetch(
+            `https://sms-activate.ru/stubs/handler_api.php?api_key=${smsApiKey}&action=getStatus&id=${requestId}`
+        );
+
+        await sleep(5000);
+        statusRes = await statusRes.text();
+        console.log(statusRes);
+        console.log(statusRes.split(":"));
+        const statusArr = statusRes.split(":");
+        const status = statusArr[0];
+        if (status === "STATUS_OK") {
+            comfirmCode = statusArr[1];
+            confirmed = true;
+            // change status to code gotten to SMS api
+            // let changeSmsStatusToGotten = await fetch(
+            //     `https://sms-activate.ru/stubs/handler_api.php?api_key=${smsApiKey}&action=setStatus&status=6&id=${requestId}`
+            // );
+            break;
+        }
+    }
+
+    if (confirmed === false) {
+        await fetch(
+            `https://sms-activate.ru/stubs/handler_api.php?api_key=${smsApiKey}&action=setStatus&status=8&id=${requestId}`
+        );
+
+        console.log("Auth Failed. \n");
+        try {
+            await browser.close();
+            return;
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    console.log(comfirmCode);
+
+    await sleep(500);
+
+    await page.keyboard.type(comfirmCode, { delay: 17 });
+
+    const codeNext =
+        '//*[@id="layers"]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[2]/div';
+    const codeNextEle = await page.$x(codeNext);
+    await sleep(1681);
+    await codeNextEle[0].click();
+
+    await sleep(1711);
+
+    await page.keyboard.type(password);
+
+    await sleep(3300);
+
+    const passNext =
+        '//*[@id="layers"]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[2]/div';
+    const passNextEle = await page.$x(passNext);
+    await passNextEle[0].click();
+
+    await sleep(3500);
+
+    const elementHandle = await page.$("input[type=file]");
+    await elementHandle.uploadFile("logo.jpeg");
+
+    await sleep(2190);
+
+    const imageApply =
+        '//*[@id="layers"]/div[2]/div[2]/div/div/div/div/div[2]/div[2]/div/div[1]/div/div/div/div[3]/div';
+    const imageApplyEle = await page.$x(imageApply);
+    await imageApplyEle[0].click();
+
+    await sleep(1575);
+
+    const imageNext =
+        '//*[@id="layers"]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[2]/div';
+
+    const imageNextEle = await page.$x(imageNext);
+
+    await imageNextEle[0].click();
+
+    await sleep(2371);
+
+    const bioSkip =
+        '//*[@id="layers"]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[2]/div';
+
+    const bioSkipEle = await page.$x(bioSkip);
+
+    await bioSkipEle[0].click();
+
+    await sleep(2000);
+
+    const interestNext =
+        '//*[@id="layers"]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[2]/div';
+    const interestNextEle = await page.$x(interestNext);
+
+    await interestNextEle[0].click();
+
+    await sleep(5000);
+
+    const follow1 =
+        '//*[@id="layers"]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[1]/div/div[3]/section/div/div/div[3]/div/div';
+    const follow2 =
+        '//*[@id="layers"]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[1]/div/div[3]/section/div/div/div[4]/div/div';
+    const follow3 =
+        ' //*[@id="layers"]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[1]/div/div[3]/section/div/div/div[5]/div/div';
+
+    const follow4 =
+        ' //*[@id="layers"]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[1]/div/div[3]/section/div/div/div[6]/div/div';
+
+    const follow5 =
+        ' //*[@id="layers"]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[1]/div/div[3]/section/div/div/div[7]/div/div';
+
+    const follow1Ele = await page.$x(follow1);
+    const follow2Ele = await page.$x(follow2);
+    const follow3Ele = await page.$x(follow3);
+    const follow4Ele = await page.$x(follow4);
+    const follow5Ele = await page.$x(follow5);
+
+    await follow1Ele[0].click();
+
+    await sleep(1351);
+
+    await follow2Ele[0].click();
+
+    await sleep(1457);
+    await follow3Ele[0].click();
+
+    await sleep(1597);
+
+    await follow4Ele[0].click();
+
+    await sleep(1597);
+
+    await follow5Ele[0].click();
+
+    await sleep(2100);
+
+    const followNext =
+        '//*[@id="layers"]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[2]/div';
+
+    const followNextEle = await page.$x(followNext);
+
+    await followNextEle[0].click();
+
+    await sleep(4000);
+
+    const skipNoti =
+        '//*[@id="layers"]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div/div/div/div/div[2]/div[2]/div[2]';
+    const skipNotiEle = await page.$x(skipNoti);
+    await skipNotiEle[0].click();
+
+    await sleep(3500);
+
+    // await page.click('input[type="submit"]');
+
+    await page.waitForSelector('input[type="submit"]', { timeout: 5000 });
+
+    await Promise.all([
+        page.waitForNavigation({ waitUntil: "networkidle2" }),
+        page.click('input[type="submit"]'),
+    ]);
+
+    await page.solveRecaptchas();
+
+    await page.screenshot({ path: "after.png" });
+
+    await sleep(1500);
+
+    await page.click("#continue_button");
+
+    await sleep(2300);
+
+    await page.waitForSelector('input[type="submit"]', {
+        visible: true,
+        timeout: 4500,
+    });
+    await page.click('input[type="submit"]');
+
+    const sendSmsSecond = await fetch(
+        `https://sms-activate.ru/stubs/handler_api.php?api_key=${smsApiKey}&action=setStatus&status=3&id=${requestId}`
+    );
+
+    let secondSmsNum = "";
+
+    for (let i = 0; i < 15; i++) {
+        await sleep(4000);
+        let smsSecond = await fetch(
+            `https://sms-activate.ru/stubs/handler_api.php?api_key=${smsApiKey}&action=getStatus&id=${requestId}`
+        );
+        let smsText = await smsSecond.text();
+        let smsStatus = smsText.split(":");
+        console.log(smsStatus);
+
+        if (smsStatus[0] === "STATUS_OK") {
+            secondSmsNum = smsStatus[1];
+            await fetch(
+                `https://sms-activate.ru/stubs/handler_api.php?api_key=${smsApiKey}&action=setStatus&status=6&id=${requestId}`
+            );
+            break;
+        }
+    }
+
+    await fetch(
+        `https://sms-activate.ru/stubs/handler_api.php?api_key=${smsApiKey}&action=setStatus&status=6&id=${requestId}`
+    );
+
+    await sleep(1000);
+    await page.keyboard.type(secondSmsNum, { delay: 30 });
+
+    await sleep(1357);
+    await page.click('input[value="Next"]');
+
+    await sleep(2500);
+    await page.click('input[type="submit"]');
+
+    await sleep(6000);
+
+    const finalNoti =
+        '//*[@id="layers"]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div/div/div/div/div[2]/div[2]/div[2]';
+
+    const finalNotiEle = await page.$x(finalNoti);
+
+    await finalNotiEle[0].click();
+
+    await sleep(6000);
+
+    await page.waitForSelector('a[aria-label="Profile"]', {
+        timeout: 0,
+        visible: true,
+    });
+
+    const botUserUrl = await page.evaluate(() => {
+        let name = document.querySelector('a[aria-label="Profile"]');
+        return name.href;
+    });
+
+    const cookies = await page.cookies();
+
+    const botInfo = {
+        username: botUserUrl.split("/")[3],
+        userUrl: botUserUrl,
+        userAgent: botUsetAgent,
+        cookies,
+        phone: phoneNum,
+        region: "Russia",
+    };
+
+    fs.writeFileSync(
+        `./cookies/${botInfo.username}.json`,
+        JSON.stringify(botInfo, null, 2)
+    );
+
+    console.log("Reg Done!");
+
+    console.log(botUserUrl);
+};
+
+getUser();

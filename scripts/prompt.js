@@ -83,11 +83,32 @@ const newOldQ = async () => {
     });
 };
 
+const likeCommentRetweetOptionsQ = async () => {
+    return new Promise(async (resolve) => {
+        rl.question(
+            "[0] Most recent tweet.\n" + "[1] A specific tweet.\n",
+            (option) => {
+                resolve(option);
+            }
+        );
+    });
+};
+
+const getTweetLinkQ = async () => {
+    return new Promise(async (resolve) => {
+        rl.question("Pase the tweet link here.\n", (link) => {
+            resolve(link);
+        });
+    });
+};
+
 const mainFunc = async () => {
     return new Promise(async (resolve) => {
         let actionType = await actionTypeQ();
         let oldNew;
         let validInput = false;
+        let options;
+        let tweetLink;
         while (!validInput) {
             switch (actionType) {
                 case "1":
@@ -100,18 +121,31 @@ const mainFunc = async () => {
                     validInput = true;
                     oldNew = await newOldQ();
                     actionType = "like";
+                    options = await likeCommentRetweetOptionsQ();
+                    if (options === "1") {
+                        tweetLink = await getTweetLinkQ();
+                    }
+
                     break;
                 case "3":
                     console.log("You intend to comment: \n ");
                     validInput = true;
                     oldNew = await newOldQ();
                     actionType = "comment";
+                    options = await likeCommentRetweetOptionsQ();
+                    if (options === "1") {
+                        tweetLink = await getTweetLinkQ();
+                    }
                     break;
                 case "4":
                     console.log("You intend to retweet: \n ");
                     validInput = true;
                     oldNew = await newOldQ();
                     actionType = "retweet";
+                    options = await likeCommentRetweetOptionsQ();
+                    if (options === "1") {
+                        tweetLink = await getTweetLinkQ();
+                    }
                     break;
                 case "5":
                     console.log("Adding bots");
