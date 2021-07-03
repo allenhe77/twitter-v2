@@ -84,10 +84,14 @@ const getUser = async () => {
 
         const browser = await puppeteer.launch({
             headless: false,
-            args: [`--proxy-server=${proxy}`, "--disable-notifications"],
+            args: [`--proxy-server=${proxy}`],
         });
         const page = await browser.newPage();
-
+        // const context = browser.defaultBrowserContext();
+        // //        URL                  An array of permissions
+        // await context.overridePermissions("https://www.twitter.com", [
+        //     "notifications",
+        // ]);
         await page.evaluateOnNewDocument(() => {
             delete navigator.__proto__.webdriver;
         });
