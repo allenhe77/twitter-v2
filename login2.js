@@ -1,10 +1,10 @@
 const fs = require("fs");
 
-const LogIn = async (page, botTwitUsername) => {
+const LogIn = async (page, filePaths) => {
     return new Promise(async (resolve) => {
         console.log(process.cwd());
         console.log("sadasd");
-        const filePath = `./new/${botTwitUsername}.json`;
+        const filePath = filePaths;
         if (fs.existsSync(filePath)) {
             // If file exist load the cookies
             const cookiesString = fs.readFileSync(filePath);

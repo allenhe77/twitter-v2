@@ -392,13 +392,18 @@ const getUser = async () => {
         //skip changed to allow, to change it back change last div to 2
 
         const skipNoti =
-            '//*[@id="layers"]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div/div/div/div/div[2]/div[2]/div[1]';
+            '//*[@id="layers"]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div/div/div/div/div[2]/div[2]/div[2]';
         const skipNotiEle = await page.$x(skipNoti);
         await skipNotiEle[0].click();
 
         await sleep(3500);
+        //
+        // await page.keyboard.press("Tab");
+        //
+        // await sleep(2000);
+        // await page.keyboard.press("Enter");
 
-        // await page.click('input[type="submit"]');
+        // await page.click('input[type="submit"]'); do not uncomment this
 
         await page.waitForSelector('input[type="submit"]', { timeout: 5000 });
 
@@ -414,10 +419,17 @@ const getUser = async () => {
 
         await sleep(2300);
 
-        await page.waitForSelector('input[type="submit"]', {
-            visible: true,
-            timeout: 4500,
-        });
+        try {
+            await page.waitForSelector('input[type="submit"]', {
+                visible: true,
+                timeout: 4500,
+            });
+        } catch (e) {
+            await page.solveRecaptchas();
+
+            await sleep(2500);
+        }
+
         await page.click('input[type="submit"]');
 
         const sendSmsSecond = await fetch(
