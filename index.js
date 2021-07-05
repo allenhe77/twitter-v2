@@ -12,8 +12,7 @@ const { prompt } = require("./scripts/prompt");
 const users = JSON.parse(fs.readFileSync("./users.json").toString());
 const usersInArr = Object.keys(users);
 const numberOfAvailableBot = usersInArr.length;
-let msg;
-let count = 0;
+
 const { runBot } = require("./scripts/botAction");
 // const actionType = process.argv[2];
 // const userTwitHandle = process.argv[3];
@@ -81,6 +80,12 @@ const run = async () => {
     for (let i = 0; i < numberOfBotsToUse; i++) {
         const botTwitUsername = shuffledUserArray[i];
         const proxy = users[shuffledUserArray[i]].proxy;
+
+        // added user:pass for new ips
+
+        const user = users[shuffledUserArray[i]].proxyUser;
+        const pass = users[shuffledUserArray[i]].proxyPass;
+
         const comment = users[shuffledUserArray[i]].whatToComment.replace(
             / /g,
             "\\ "
@@ -106,7 +111,15 @@ const run = async () => {
             //         `node botAction.js ${actionType} ${userTwitHandle} ${botTwitUsername} ${proxy}`
             //     ).toString()
             // );
-            await runBot(actionType, userTwitHandle, botTwitUsername, proxy);
+            await runBot(
+                actionType,
+                userTwitHandle,
+                botTwitUsername,
+                proxy,
+                "",
+                user,
+                pass
+            );
         }
 
         updateBotActionList(actionType, botTwitUsername, userTwitHandle);

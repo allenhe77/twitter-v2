@@ -14,7 +14,7 @@ const likeTweet = require("./actions/likeTweet");
 const followUser = require("./actions/followUser");
 const retweetUser = require("./actions/retweet");
 const replyTweet = require("./actions/comment");
-const { sleep } = require("./utils");
+const { sleep, getRandomIntBetween } = require("./utils");
 
 // const proxy = "23.236.168.230:8778";
 
@@ -31,10 +31,19 @@ const chromiumExecutablePath = isPkg
       )
     : puppeteer.executablePath();
 
-const runBot = async (action, handle, botName, botProxy, comment) => {
+const runBot = async (
+    action,
+    handle,
+    botName,
+    botProxy,
+    comment,
+    user,
+    pass
+) => {
     const userTweetHandle = handle;
     const botActions = action;
     const botTwitUsername = botName;
+    // changing to residential ip, but with different user:pass
     const proxy = botProxy;
     return new Promise(async (resolve) => {
         // const puppeteer = addExtra(puppeteer);
@@ -49,6 +58,13 @@ const runBot = async (action, handle, botName, botProxy, comment) => {
         const page = await browser.newPage();
         await page.setViewport({ width: 1000, height: 1000 });
 
+        // added user:pass for new ips
+
+        await page.authenticate({
+            username: user,
+            password: pass,
+        });
+        // added user:pass for new ips
         await logIn(previousSession, page, cookiesFilePath, botTwitUsername);
 
         console.log("before goto");
@@ -86,9 +102,10 @@ const runBot = async (action, handle, botName, botProxy, comment) => {
             await replyTweet(page, sleep, comment);
         }
 
-        await page.evaluate(() => {
-            alert("Action complete. You may close the browser now.");
-        });
+        // await page.evaluate(() => {
+        //     alert("Action complete. You may close the browser now.");
+        // });
+        await sleep(getRandomIntBetween(1000, 3500));
         console.log(
             `Bot: ${botTwitUsername} has ${botActions}ed ${userTweetHandle}`
         );
