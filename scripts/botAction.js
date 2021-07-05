@@ -55,7 +55,9 @@ const runBot = async (
             // executablePath: "./chrome/chrome.exe",
             args: [`--proxy-server=https=${proxy}`],
         });
+
         const page = await browser.newPage();
+
         await page.setViewport({ width: 1000, height: 1000 });
 
         // added user:pass for new ips
@@ -67,11 +69,17 @@ const runBot = async (
         // added user:pass for new ips
         await logIn(previousSession, page, cookiesFilePath, botTwitUsername);
 
-        console.log("before goto");
-        await page.goto("https://twitter.com", { waitUntil: "networkidle2" });
+        try {
+            await page.goto("https://twitter.com", {
+                waitUntil: "networkidle2",
+            });
+        } catch (e) {
+            await browser.close();
+            resolve("Could not load homepage");
+        }
 
         await sleep(3000);
-        console.log("after goto");
+
         //scrolling
 
         // await scrollPage(page);

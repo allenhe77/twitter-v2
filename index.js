@@ -68,14 +68,13 @@ const run = async () => {
         );
         return;
     }
-    console.log(actionType);
+
     let shuffledUserArray;
     if (oldOrNew === "new") {
         shuffledUserArray = shuffleArray(usersInArr);
     } else if (oldOrNew === "old" || actionType === "follow") {
         shuffledUserArray = shuffleArray(botUserAllowed);
     }
-    console.log("Shuufled arr: ", shuffledUserArray);
 
     for (let i = 0; i < numberOfBotsToUse; i++) {
         const botTwitUsername = shuffledUserArray[i];
