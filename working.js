@@ -63,44 +63,27 @@ const proxyArr = [
     "46.161.50.74",
 ];
 
-jsonArr = glob.sync("testing/*.json");
-console.log(jsonArr);
-const proxyName = "palk38ee";
-const proxyPass = "vx3tGezsm7Z1vXAe_country-Russia_session-U8VJHVlO";
+jsonArr = glob.sync("working/*.json");
 
 const mainTest = async () => {
-    for (let i = 0; i < jsonArr.length; i += 5) {
-        await Promise.all([
-            testBot(jsonArr[i]),
-            testBot(jsonArr[i + 1]),
-            testBot(jsonArr[i + 2]),
-            testBot(jsonArr[i + 3]),
-            testBot(jsonArr[i + 4]),
-
-            // testBot(i + 5),
-            // testBot(i + 6),
-            // testBot(i + 7),
-            // testBot(i + 8),
-            // testBot(i + 9),
-        ]);
+    for (let i = 0; i < jsonArr.length; i++) {
+        await testBot(jsonArr[i]);
     }
 };
-
 const testBot = async (filePath) => {
     return new Promise(async (resolve) => {
         const file = fs.readFileSync(filePath);
         const obj = JSON.parse(file);
         // const proxy =
         //     proxyArr[getRandomIntBetween(0, proxyArr.length)] + ":44429";
-        // const proxy = obj.proxy;
-        const proxy = "3.224.22.75:31112";
+        const proxy = obj.proxy;
+
         const browser = await puppeteer.launch({
             headless: false,
             args: [`--proxy-server=https=${proxy}`],
         });
 
         const page = await browser.newPage();
-        await page.authenticate({ username: proxyName, password: proxyPass });
         await page.evaluateOnNewDocument(() => {
             delete navigator.__proto__.webdriver;
         });
@@ -124,7 +107,6 @@ const testBot = async (filePath) => {
         //         }
         //     }
         // }
-
         try {
             await page.goto("https://www.twitter.com", {
                 waitUntil: "networkidle2",
@@ -137,7 +119,7 @@ const testBot = async (filePath) => {
         // other actions...
         if (page.url() !== "https://twitter.com/home") {
             fs.renameSync(filePath, `notworking/${filePath.split("/")[1]}`);
-            console.log("failed");
+            console.log("not working!");
         }
         await sleep(5000);
         await browser.close();

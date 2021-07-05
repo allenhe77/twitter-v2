@@ -1,5 +1,6 @@
 const { getRandomSideBarEle } = require("./scripts/elemenetsList");
 const glob = require("glob");
+const { Cluster } = require("puppeteer-cluster");
 // const randomUseragent = require("random-useragent");
 // const puppeteer = require("puppeteer");
 const puppeteer = require("puppeteer-extra");
@@ -49,7 +50,7 @@ const password = "123456abcde";
 const capchaKey = "8cd2a604d01a760299d88b6bbed17cf2";
 
 const botUsetAgent =
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36";
+    "5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36";
 
 puppeteer.use(StealthPlugin());
 
@@ -72,26 +73,25 @@ glob("profilePics/*.jpeg", {}, function (er, files) {
     // er is an error object or null.
     picArr = files;
 });
-const proxyName = "palk38ee";
-const proxyPass = "vx3tGezsm7Z1vXAe_country-Russia_session-U8VJHVlO";
 
 const getUser = async () => {
-    return new Promise(async (resolve) => {
+    const cluster = await Cluster.launch({
+        concurrency: Cluster.CONCURRENCY_BROWSER,
+        maxConcurrency: 2,
+        puppeteerOptions: {
+            headless: false,
+            args: [], //  sandbox needed for it work in linux
+        },
+    });
+    await cluster.task(async ({ page, data: data }) => {
         const getRandomPic = () => {
             const fileNum = getRandomIntBetween(0, picArr.length - 1);
             return fileNum;
         };
 
-        // const proxy =
-        //     proxyArr[getRandomIntBetween(0, proxyArr.length)] + ":44429";
+        // const proxy = proxyArr[getRandomIntBetween(0, 9)] + ":44429";
 
-        const proxy = "3.224.22.75:31112";
-
-        const browser = await puppeteer.launch({
-            headless: true,
-            args: [`--proxy-server=${proxy}`],
-        });
-        const page = await browser.newPage();
+        // const page = await browser.newPage();
         await page.setViewport({
             width: 1200,
             height: 1080,
@@ -101,27 +101,20 @@ const getUser = async () => {
         // await context.overridePermissions("https://www.twitter.com", [
         //     "notifications",
         // ]);
-        await page.evaluateOnNewDocument(() => {
-            delete navigator.__proto__.webdriver;
-        });
+        // await page.evaluateOnNewDocument(() => {
+        //     delete navigator.__proto__.webdriver;
+        // });
 
         await sleep(2000);
 
-        await page.authenticate({ username: proxyName, password: proxyPass });
-
         await page.setUserAgent(botUsetAgent);
-
-        try {
-            await page.goto("https://twitter.com", {
-                waitUntil: "networkidle2",
-            });
-        } catch (e) {}
+        await page.goto("https://twitter.com", {
+            waitUntil: "networkidle2",
+        });
 
         await sleep(1500);
 
-        try {
-            await page.click('a[href="/i/flow/signup"]');
-        } catch (e) {}
+        await page.click('a[href="/i/flow/signup"]');
 
         await sleep(4000);
 
@@ -149,6 +142,8 @@ const getUser = async () => {
         console.log(apiResText.split(":"));
         const requestId = apiResText.split(":")[1];
         const phoneNum = apiResText.split(":")[2];
+        console.log("id: ", requestId);
+        console.log("number: ", phoneNum);
 
         // wait for phone number
 
@@ -167,14 +162,7 @@ const getUser = async () => {
                 `https://sms-activate.ru/stubs/handler_api.php?api_key=${smsApiKey}&action=setStatus&status=8&id=${requestId}`
             );
             console.log("Phone number not valid.");
-            resolve(false);
-
-            try {
-                await browser.close();
-                return;
-            } catch (err) {
-                console.error(err);
-            }
+            return;
         } catch (err) {
             console.log("Phone number working!");
         }
@@ -183,11 +171,9 @@ const getUser = async () => {
             '//*[@id="layers"]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[1]/div/div[5]/div[3]/div/div[1]';
 
         const monthElement = await page.$x(month);
-        try {
-            await monthElement[0].click();
-        } catch (e) {
-            console.error(e);
-        }
+        await monthElement[0].click();
+
+        console.log("I still work! 1");
 
         await sleep(3000);
 
@@ -198,13 +184,7 @@ const getUser = async () => {
 
         const dayEle = await page.$x(day);
 
-        try {
-            await dayEle[0].click();
-        } catch (e) {
-            console.error(e);
-            await browser.close();
-            resolve(true);
-        }
+        await dayEle[0].click();
 
         await sleep(2561);
 
@@ -215,13 +195,7 @@ const getUser = async () => {
 
         const yearEle = await page.$x(year);
 
-        try {
-            await yearEle[0].click();
-        } catch (e) {
-            console.error(e);
-            await browser.close();
-            resolve(true);
-        }
+        await yearEle[0].click();
 
         await sleep(2971);
 
@@ -229,35 +203,22 @@ const getUser = async () => {
             "#SELECTOR_3",
             getRandomIntBetween(1990, 2002).toString()
         );
-
-        await sleep(3153);
+        console.log("I still work! 2");
+        await sleep(500000);
 
         const submit =
             '//*[@id="layers"]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[2]/div';
+        console.log("I still work! 3");
         const submitEle = await page.$x(submit);
 
-        try {
-            await submitEle[0].click();
-        } catch (e) {
-            console.error(e);
-            await browser.close();
-            resolve(true);
-        }
-
+        await submitEle[0].click();
         await sleep(1400);
 
         const next =
             '//*[@id="layers"]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[2]/div';
 
         const nextEle = await page.$x(next);
-
-        try {
-            await nextEle[0].click();
-        } catch (e) {
-            console.error(e);
-            await browser.close();
-            resolve(true);
-        }
+        await nextEle[0].click();
 
         await sleep(1700);
 
@@ -265,13 +226,7 @@ const getUser = async () => {
             '//*[@id="layers"]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div/div/div/div[5]';
         const signUpEle = await page.$x(signUp);
 
-        try {
-            await signUpEle[0].click();
-        } catch (e) {
-            console.error(e);
-            await browser.close();
-            resolve(true);
-        }
+        await signUpEle[0].click();
 
         await sleep(2061);
 
@@ -281,13 +236,7 @@ const getUser = async () => {
 
         const okEle = await page.$x(ok);
 
-        try {
-            await okEle[0].click();
-        } catch (e) {
-            console.error(e);
-            await browser.close();
-            resolve(true);
-        }
+        await okEle[0].click();
 
         // send request to sms api to change status to 1
 
@@ -332,7 +281,6 @@ const getUser = async () => {
             } catch (err) {
                 console.error(err);
             }
-            resolve(false);
         }
 
         console.log(comfirmCode);
@@ -345,14 +293,7 @@ const getUser = async () => {
             '//*[@id="layers"]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[2]/div';
         const codeNextEle = await page.$x(codeNext);
         await sleep(1681);
-
-        try {
-            await codeNextEle[0].click();
-        } catch (e) {
-            console.error(e);
-            await browser.close();
-            resolve(true);
-        }
+        await codeNextEle[0].click();
 
         await sleep(1711);
 
@@ -363,28 +304,14 @@ const getUser = async () => {
         const passNext =
             '//*[@id="layers"]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[2]/div';
         const passNextEle = await page.$x(passNext);
-
-        try {
-            await passNextEle[0].click();
-        } catch (e) {
-            console.error(e);
-            await browser.close();
-            resolve(true);
-        }
+        await passNextEle[0].click();
 
         await sleep(3500);
 
         const elementHandle = await page.$("input[type=file]");
 
         await sleep(3000);
-
-        try {
-            await elementHandle.uploadFile(picArr[getRandomPic()]);
-        } catch (e) {
-            console.error(e);
-            await browser.close();
-            resolve(true);
-        }
+        await elementHandle.uploadFile(picArr[getRandomPic()]);
 
         await sleep(7500);
 
@@ -393,15 +320,8 @@ const getUser = async () => {
             '//*[@id="layers"]/div[2]/div[2]/div/div/div/div/div[2]/div[2]/div/div[1]/div/div/div/div[3]/div';
         const imageApplyEle = await page.$x(imageApply);
 
-        try {
-            await imageApplyEle[0].click();
-        } catch (e) {
-            console.error(e);
-            await browser.close();
-            resolve(true);
-        }
-
-        // await page.screenshot({ path: "file.png" });
+        await imageApplyEle[0].click();
+        await page.screenshot({ path: "file.png" });
 
         await sleep(1575);
 
@@ -410,13 +330,7 @@ const getUser = async () => {
 
         const imageNextEle = await page.$x(imageNext);
 
-        try {
-            await imageNextEle[0].click();
-        } catch (e) {
-            console.error(e);
-            await browser.close();
-            resolve(true);
-        }
+        await imageNextEle[0].click();
 
         await sleep(2371);
 
@@ -429,7 +343,7 @@ const getUser = async () => {
         await sleep(2000);
 
         await page.keyboard.press("Enter");
-        // await page.screenshot({ path: "bio.png" });
+        await page.screenshot({ path: "bio.png" });
 
         // await bioSkipEle[0].click();
 
@@ -439,13 +353,7 @@ const getUser = async () => {
             '//*[@id="layers"]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[2]/div';
         const interestNextEle = await page.$x(interestNext);
 
-        try {
-            await interestNextEle[0].click();
-        } catch (e) {
-            console.error(e);
-            await browser.close();
-            resolve(true);
-        }
+        await interestNextEle[0].click();
 
         await sleep(5000);
 
@@ -468,52 +376,22 @@ const getUser = async () => {
         const follow4Ele = await page.$x(follow4);
         const follow5Ele = await page.$x(follow5);
 
-        try {
-            await follow1Ele[0].click();
-        } catch (e) {
-            console.error(e);
-            await browser.close();
-            resolve(true);
-        }
+        await follow1Ele[0].click();
 
         await sleep(1351);
 
-        try {
-            await follow2Ele[0].click();
-        } catch (e) {
-            console.error(e);
-            await browser.close();
-            resolve(true);
-        }
+        await follow2Ele[0].click();
 
         await sleep(1457);
-        try {
-            await follow3Ele[0].click();
-        } catch (e) {
-            console.error(e);
-            await browser.close();
-            resolve(true);
-        }
+        await follow3Ele[0].click();
 
         await sleep(1597);
 
-        try {
-            await follow4Ele[0].click();
-        } catch (e) {
-            console.error(e);
-            await browser.close();
-            resolve(true);
-        }
+        await follow4Ele[0].click();
 
         await sleep(1597);
 
-        try {
-            await follow5Ele[0].click();
-        } catch (e) {
-            console.error(e);
-            await browser.close();
-            resolve(true);
-        }
+        await follow5Ele[0].click();
 
         await sleep(2100);
 
@@ -522,13 +400,7 @@ const getUser = async () => {
 
         const followNextEle = await page.$x(followNext);
 
-        try {
-            await followNextEle[0].click();
-        } catch (e) {
-            console.error(e);
-            await browser.close();
-            resolve(true);
-        }
+        await followNextEle[0].click();
 
         await sleep(4000);
 
@@ -537,14 +409,7 @@ const getUser = async () => {
         const skipNoti =
             '//*[@id="layers"]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div/div/div/div/div[2]/div[2]/div[2]';
         const skipNotiEle = await page.$x(skipNoti);
-
-        try {
-            await skipNotiEle[0].click();
-        } catch (e) {
-            console.error(e);
-            await browser.close();
-            resolve(true);
-        }
+        await skipNotiEle[0].click();
 
         await sleep(3500);
         //
@@ -555,15 +420,7 @@ const getUser = async () => {
 
         // await page.click('input[type="submit"]'); do not uncomment this
 
-        try {
-            await page.waitForSelector('input[type="submit"]', {
-                timeout: 5000,
-            });
-        } catch (e) {
-            console.error(e);
-            await browser.close();
-            resolve(true);
-        }
+        await page.waitForSelector('input[type="submit"]', { timeout: 5000 });
 
         await page.click('input[type="submit"]');
 
@@ -631,8 +488,6 @@ const getUser = async () => {
             } catch (err) {
                 console.error(err);
             }
-
-            resolve(false);
         }
 
         await sleep(1000);
@@ -651,11 +506,7 @@ const getUser = async () => {
 
         const finalNotiEle = await page.$x(finalNoti);
 
-        try {
-            await finalNotiEle[0].click();
-        } catch (err) {
-            console.error(err);
-        }
+        await finalNotiEle[0].click();
 
         await sleep(6000);
 
@@ -678,11 +529,10 @@ const getUser = async () => {
             cookies,
             phone: phoneNum,
             region: "Russia",
-            proxy,
         };
 
         fs.writeFileSync(
-            `./quarantine/${botInfo.username}.json`,
+            `./new/${botInfo.username}.json`,
             JSON.stringify(botInfo, null, 2)
         );
 
@@ -692,7 +542,7 @@ const getUser = async () => {
 
         await sleep(5000);
 
-        // await page.screenshot({ path: "bookmark.png" });
+        await page.screenshot({ path: "bookmark.png" });
 
         console.log(page.url());
 
@@ -701,20 +551,18 @@ const getUser = async () => {
 
             await sleep(getRandomIntBetween(3000, 5000));
         }
-
-        try {
-            await browser.close();
-        } catch (err) {
-            console.error(err);
-        }
-
-        resolve(true);
     });
+
+    for (let i = 0; i < 1; i++) {
+        await cluster.queue({});
+    }
+
+    await cluster.idle();
+    await cluster.close();
 
     // const userAgent = randomUseragent.getRandom(function (ua) {
     //     return parseFloat(ua.browserVersion) >= 20;
     // });
 };
 
-// getUser();
-exports.regUser = getUser;
+getUser();

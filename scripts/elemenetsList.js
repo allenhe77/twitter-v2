@@ -5,7 +5,7 @@ const sideBar = {
     search: 'a[href="/explore"]',
     notifications: 'a[href="/notifications"]',
     messages: 'a[href="/messages"]',
-    bookmarks: 'a[href="/i/bookmarks"]',
+    // bookmarks: 'a[href="/i/bookmarks"]',
     // profile: (botTweetHandle) => {
     //     return `a[href="/${botTweetHandle}"]`;
     // },
