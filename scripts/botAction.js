@@ -72,10 +72,14 @@ const runBot = async (
         try {
             await page.goto("https://twitter.com", {
                 waitUntil: "networkidle2",
+                timeout: 0,
             });
         } catch (e) {
             await browser.close();
             resolve("Could not load homepage");
+        }
+
+        if (page.url() !== "https://twitter.com/home") {
         }
 
         await sleep(3000);
