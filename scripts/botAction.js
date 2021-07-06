@@ -1,5 +1,9 @@
 const fs = require("fs");
-const puppeteer = require("puppeteer");
+const puppeteer = require("puppeteer-extra");
+const StealthPlugin = require("puppeteer-extra-plugin-stealth");
+
+const RecaptchaPlugin = require("puppeteer-extra-plugin-recaptcha");
+puppeteer.use(StealthPlugin());
 // const { addExtra } = require("puppeteer-extra");
 // const Stealth = require("puppeteer-extra-plugin-stealth");
 // const { Cluster } = require("puppeteer-cluster");
@@ -21,6 +25,48 @@ const { sleep, getRandomIntBetween } = require("./utils");
 // const botTwitUsername = "BblytheSailsbu2";
 // const proxy = "45.94.45.13:7016";
 const { randomActions } = require("./actions/randomActions");
+
+const capchaKey = "8cd2a604d01a760299d88b6bbed17cf2";
+
+puppeteer.use(
+    RecaptchaPlugin({
+        provider: {
+            id: "2captcha",
+            token: capchaKey, // REPLACE THIS WITH YOUR OWN 2CAPTCHA API KEY ⚡
+        },
+        visualFeedback: true, // colorize reCAPTCHAs (violet = detected, green = solved)
+    })
+);
+
+const proxyArr = [
+    "5.8.51.78",
+    "5.8.54.250",
+    "37.139.56.74",
+    "31.184.194.254",
+    "5.101.65.15",
+    "5.8.52.97",
+    "5.101.0.88",
+    "5.8.52.3",
+    "46.161.50.103",
+    "46.161.51.80",
+    "5.101.2.180",
+    "5.8.11.235",
+    "91.243.51.181",
+    "91.243.48.140",
+    "5.8.48.210",
+    "5.101.1.93",
+    "37.139.56.153",
+    "37.139.59.5",
+    "5.101.0.206",
+    "31.184.199.154",
+    "5.101.0.27",
+    "5.8.11.20",
+    "5.8.53.201",
+    "5.101.1.97",
+    "31.184.194.92",
+    "95.215.1.81",
+    "5.8.11.107",
+];
 
 const path = require("path");
 const isPkg = typeof process.pkg !== "undefined";
@@ -44,11 +90,14 @@ const runBot = async (
     const botActions = action;
     const botTwitUsername = botName;
     // changing to residential ip, but with different user:pass
-    const proxy = botProxy;
+
+    // const proxy = botProxy;
     return new Promise(async (resolve) => {
         // const puppeteer = addExtra(puppeteer);
         // puppeteer.use(Stealth());
-
+        // const proxy =
+        //     proxyArr[getRandomIntBetween(0, proxyArr.length)] + ":44429";
+        const proxy = "proxy.packetstream.io:31112";
         const browser = await puppeteer.launch({
             headless: false,
             executablePath: chromiumExecutablePath,
@@ -63,8 +112,8 @@ const runBot = async (
         // added user:pass for new ips
 
         await page.authenticate({
-            username: user,
-            password: pass,
+            username: "cheraj",
+            password: "Z2sL4fJ2WiNzg88x_country",
         });
         // added user:pass for new ips
         await logIn(previousSession, page, cookiesFilePath, botTwitUsername);
@@ -79,8 +128,38 @@ const runBot = async (
             resolve("Could not load homepage");
         }
 
-        if (page.url() !== "https://twitter.com/home") {
+        if ((await page.url()) !== "https://twitter.com/home") {
+            try {
+                await page.waitForSelector('input[value="Start"]', {
+                    timeout: 0,
+                });
+                await page.click('input[value="Start"]');
+
+                await sleep(4000);
+                await page.solveRecaptchas();
+                console.log("capcha solved");
+                await sleep(2000);
+                await page.click("#continue_button");
+            } catch (err) {
+                await page.solveRecaptchas();
+            }
         }
+
+        // continue to homepage
+        try {
+            await page.waitForSelector('input[type="submit"]', {
+                visible: true,
+                timeout: 4500,
+            });
+        } catch (err) {
+            await browser.close();
+
+            resolve(false);
+        }
+
+        await page.click('input[type="submit"]');
+        // await browser.close();
+        console.log("success");
 
         await sleep(3000);
 

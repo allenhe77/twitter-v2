@@ -76,6 +76,7 @@ const run = async () => {
         shuffledUserArray = shuffleArray(botUserAllowed);
     }
 
+    // maybe change for loop to dynamic
     for (let i = 0; i < numberOfBotsToUse; i++) {
         const botTwitUsername = shuffledUserArray[i];
         const proxy = users[shuffledUserArray[i]].proxy;
@@ -91,26 +92,35 @@ const run = async () => {
         );
         await sleep(delay);
 
+        // change to multi version
         if (actionType === "comment") {
             // console.log(
             //     execSync(
             //         `node botAction.js ${actionType} ${userTwitHandle} ${botTwitUsername} ${proxy} ${comment}`
             //     ).toString()
             // );
-            await runBot(
+            runBot(
                 actionType,
                 userTwitHandle,
                 botTwitUsername,
                 proxy,
                 comment
-            );
+            ).then((data) => {
+                updateBotActionList(
+                    actionType,
+                    botTwitUsername,
+                    userTwitHandle
+                );
+            });
         } else {
             // console.log(
             //     execSync(
             //         `node botAction.js ${actionType} ${userTwitHandle} ${botTwitUsername} ${proxy}`
             //     ).toString()
             // );
-            await runBot(
+
+            // change to multi version
+            runBot(
                 actionType,
                 userTwitHandle,
                 botTwitUsername,
@@ -118,10 +128,16 @@ const run = async () => {
                 "",
                 user,
                 pass
-            );
+            ).then((data) => {
+                updateBotActionList(
+                    actionType,
+                    botTwitUsername,
+                    userTwitHandle
+                );
+            });
         }
 
-        updateBotActionList(actionType, botTwitUsername, userTwitHandle);
+        // updateBotActionList(actionType, botTwitUsername, userTwitHandle);
     }
 
     if (oldOrNew === "new") {
