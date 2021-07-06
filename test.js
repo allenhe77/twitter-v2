@@ -65,8 +65,11 @@ const proxyArr = [
 
 jsonArr = glob.sync("testing/*.json");
 console.log(jsonArr);
-const proxyName = "palk38ee";
-const proxyPass = "vx3tGezsm7Z1vXAe_country-Russia_session-U8VJHVlO";
+// const proxyName = "palk38ee";
+// const proxyPass = "vx3tGezsm7Z1vXAe_country-Russia_session-U8VJHVlO";
+const proxyName = "cheraj";
+const proxyPass = "Z2sL4fJ2WiNzg88x_country-Russia";
+const files = fs.readFileSync("./proxy.txt").toString();
 
 const mainTest = async () => {
     for (let i = 0; i < jsonArr.length; i += 5) {
@@ -93,7 +96,7 @@ const testBot = async (filePath) => {
         // const proxy =
         //     proxyArr[getRandomIntBetween(0, proxyArr.length)] + ":44429";
         // const proxy = obj.proxy;
-        const proxy = "3.224.22.75:31112";
+        const proxy = "proxy.packetstream.io:31112";
         const browser = await puppeteer.launch({
             headless: false,
             args: [`--proxy-server=https=${proxy}`],

@@ -78,6 +78,15 @@ const runBot = async (
             resolve("Could not load homepage");
         }
 
+        if (page.url() !== "https://twitter.com/home") {
+            fs.renameSync(
+                `./cookies/${botTwitUsername}.json`,
+                `notworking/${botTwitUsername}.json`
+            );
+            await browser.close();
+            resolve(false);
+        }
+
         await sleep(3000);
 
         //scrolling

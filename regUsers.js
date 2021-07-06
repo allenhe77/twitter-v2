@@ -72,9 +72,9 @@ glob("profilePics/*.jpeg", {}, function (er, files) {
     // er is an error object or null.
     picArr = files;
 });
-const proxyName = "palk38ee";
-const proxyPass = "vx3tGezsm7Z1vXAe_country-Russia_session-U8VJHVlO";
-
+const proxyName = "cheraj";
+const proxyPass = "Z2sL4fJ2WiNzg88x_country-Russia";
+// proxy.packetstream.io:31112:cheraj:Z2sL4fJ2WiNzg88x_country-Russia
 const getUser = async () => {
     return new Promise(async (resolve) => {
         const getRandomPic = () => {
@@ -85,7 +85,7 @@ const getUser = async () => {
         // const proxy =
         //     proxyArr[getRandomIntBetween(0, proxyArr.length)] + ":44429";
 
-        const proxy = "3.224.22.75:31112";
+        const proxy = "proxy.packetstream.io:31112";
 
         const browser = await puppeteer.launch({
             headless: true,
