@@ -106,7 +106,7 @@ const run = async () => {
 
         //get phone number from API
         const apiRes = await fetch(
-            `https://sms-activate.ru/stubs/handler_api.php?api_key=${smsApiKey}&action=getNumber&service=tw&country=1`
+            `https://sms-activate.ru/stubs/handler_api.php?api_key=${smsApiKey}&action=getNumber&service=tw&country=0`
         );
         const apiResText = await apiRes.text();
         const requestId = apiResText.split(":")[1];
@@ -131,6 +131,87 @@ const run = async () => {
             resolve("Phone number not valid.");
         } catch (err) {
             console.log("Phone number working!");
+        }
+
+        //input dates
+        const month =
+            '//*[@id="layers"]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[1]/div/div[5]/div[3]/div/div[1]';
+
+        const monthElement = await page.$x(month);
+        try {
+            await monthElement[0].click();
+        } catch (e) {
+            console.error(e);
+        }
+
+        try {
+            await sleep(3000);
+        } catch (e) {
+            console.error(e);
+            await browser.close();
+            resolve(true);
+        }
+
+        try {
+            await page.select(
+                "#SELECTOR_1",
+                getRandomIntBetween(1, 12).toString()
+            );
+        } catch (e) {
+            console.error(e);
+            await browser.close();
+            resolve(true);
+        }
+
+        const day =
+            '//*[@id="layers"]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[1]/div/div[5]/div[3]/div/div[2]';
+
+        const dayEle = await page.$x(day);
+
+        try {
+            await dayEle[0].click();
+        } catch (e) {
+            console.error(e);
+            await browser.close();
+            resolve(true);
+        }
+
+        await sleep(2561);
+
+        await page.select("#SELECTOR_2", getRandomIntBetween(1, 28).toString());
+
+        const year =
+            '//*[@id="layers"]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[1]/div/div[5]/div[3]/div/div[3]';
+
+        const yearEle = await page.$x(year);
+
+        try {
+            await yearEle[0].click();
+        } catch (e) {
+            console.error(e);
+            await browser.close();
+            resolve(true);
+        }
+
+        await sleep(2971);
+
+        await page.select(
+            "#SELECTOR_3",
+            getRandomIntBetween(1990, 2002).toString()
+        );
+
+        await sleep(3153);
+
+        const submit =
+            '//*[@id="layers"]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[2]/div';
+        const submitEle = await page.$x(submit);
+
+        try {
+            await submitEle[0].click();
+        } catch (e) {
+            console.error(e);
+            await browser.close();
+            resolve(true);
         }
     });
 };
