@@ -45,7 +45,7 @@ const { runBot } = require("./scripts/botAction");
 // console.log("Shuufled arr: ", shuffledUserArray);
 
 //add global variable here, and increment and decrement each time
-let concurrency = 2;
+let concurrency = 1;
 let count = 0;
 
 const run = async () => {

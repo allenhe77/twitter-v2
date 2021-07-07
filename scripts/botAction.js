@@ -131,7 +131,7 @@ const runBot = async (
         if ((await page.url()) !== "https://twitter.com/home") {
             try {
                 await page.waitForSelector('input[value="Start"]', {
-                    timeout: 0,
+                    timeout: 6000,
                 });
                 await page.click('input[value="Start"]');
 
@@ -164,6 +164,7 @@ const runBot = async (
                     resolve(false);
                 }
             } catch (err) {
+                console.log("solving capcha straight!");
                 await page.solveRecaptchas();
 
                 await Promise.all([
@@ -173,6 +174,14 @@ const runBot = async (
                     }),
                     page.click("#continue_button"),
                 ]);
+            }
+        } else {
+            try {
+                await page.waitForSelector('a[href="/explore"]');
+            } catch (e) {
+                console.error(e);
+                await browser.close();
+                resolve("Could not load homepage error.");
             }
         }
 
@@ -188,6 +197,7 @@ const runBot = async (
 
         await page.goto(`https://twitter.com/${userTweetHandle}`, {
             waitUntil: "networkidle2",
+            timeout: 0,
         });
 
         if (botActions === "like") {
@@ -207,6 +217,9 @@ const runBot = async (
         if (botActions === "comment") {
             await replyTweet(page, sleep, comment);
         }
+
+        // random action after task
+        await randomActions(page, sleep);
 
         // await page.evaluate(() => {
         //     alert("Action complete. You may close the browser now.");
