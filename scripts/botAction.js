@@ -139,27 +139,42 @@ const runBot = async (
                 await page.solveRecaptchas();
                 console.log("capcha solved");
                 await sleep(2000);
-                await page.click("#continue_button");
+
+                await Promise.all([
+                    page.waitForNavigation({
+                        waitUntil: "networkidle2",
+                        timeout: 0,
+                    }),
+                    page.click("#continue_button"),
+                ]);
+
+                // continue to homepage
+                try {
+                    await page.waitForSelector('input[type="submit"]', {
+                        visible: true,
+                        timeout: 4500,
+                    });
+
+                    await page.click('input[type="submit"]');
+                    // await browser.close();
+                    console.log("success");
+                } catch (err) {
+                    await browser.close();
+
+                    resolve(false);
+                }
             } catch (err) {
                 await page.solveRecaptchas();
+
+                await Promise.all([
+                    page.waitForNavigation({
+                        waitUntil: "networkidle2",
+                        timeout: 0,
+                    }),
+                    page.click("#continue_button"),
+                ]);
             }
         }
-
-        // continue to homepage
-        try {
-            await page.waitForSelector('input[type="submit"]', {
-                visible: true,
-                timeout: 4500,
-            });
-        } catch (err) {
-            await browser.close();
-
-            resolve(false);
-        }
-
-        await page.click('input[type="submit"]');
-        // await browser.close();
-        console.log("success");
 
         await sleep(3000);
 

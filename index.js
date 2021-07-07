@@ -44,6 +44,10 @@ const { runBot } = require("./scripts/botAction");
 // }
 // console.log("Shuufled arr: ", shuffledUserArray);
 
+//add global variable here, and increment and decrement each time
+let concurrency = 2;
+let count = 0;
+
 const run = async () => {
     const userInput = await prompt();
 
@@ -99,19 +103,34 @@ const run = async () => {
             //         `node botAction.js ${actionType} ${userTwitHandle} ${botTwitUsername} ${proxy} ${comment}`
             //     ).toString()
             // );
-            runBot(
-                actionType,
-                userTwitHandle,
-                botTwitUsername,
-                proxy,
-                comment
-            ).then((data) => {
-                updateBotActionList(
-                    actionType,
-                    botTwitUsername,
-                    userTwitHandle
-                );
-            });
+            let checked = false;
+            while (!checked) {
+                if (count < concurrency) {
+                    count++;
+                    runBot(
+                        actionType,
+                        userTwitHandle,
+                        botTwitUsername,
+                        proxy,
+                        comment
+                    ).then((data) => {
+                        console.log(data);
+                        updateBotActionList(
+                            actionType,
+                            botTwitUsername,
+                            userTwitHandle
+                        );
+                        console.log(
+                            `Task Done. Decrementing count to ${count - 1}. `
+                        );
+                        count--;
+                    });
+
+                    checked = true;
+                } else {
+                    await sleep(1000);
+                }
+            }
         } else {
             // console.log(
             //     execSync(
@@ -120,21 +139,48 @@ const run = async () => {
             // );
 
             // change to multi version
-            runBot(
-                actionType,
-                userTwitHandle,
-                botTwitUsername,
-                proxy,
-                "",
-                user,
-                pass
-            ).then((data) => {
-                updateBotActionList(
-                    actionType,
-                    botTwitUsername,
-                    userTwitHandle
-                );
-            });
+            let checked = false;
+            while (!checked) {
+                if (count < concurrency) {
+                    count++;
+                    runBot(
+                        actionType,
+                        userTwitHandle,
+                        botTwitUsername,
+                        proxy,
+                        comment
+                    ).then((data) => {
+                        updateBotActionList(
+                            actionType,
+                            botTwitUsername,
+                            userTwitHandle
+                        );
+                        console.log(
+                            `Task Done. Decrementing count to ${count - 1}. `
+                        );
+                        count--;
+                    });
+
+                    checked = true;
+                } else {
+                    await sleep(1000);
+                }
+            }
+            // runBot(
+            //     actionType,
+            //     userTwitHandle,
+            //     botTwitUsername,
+            //     proxy,
+            //     "",
+            //     user,
+            //     pass
+            // ).then((data) => {
+            //     updateBotActionList(
+            //         actionType,
+            //         botTwitUsername,
+            //         userTwitHandle
+            //     );
+            // });
         }
 
         // updateBotActionList(actionType, botTwitUsername, userTwitHandle);
